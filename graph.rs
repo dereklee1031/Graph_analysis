@@ -3,7 +3,6 @@ use std::io::{self, BufRead, BufReader};
 use std::path::Path;
 use std::num::ParseIntError;
 
-// Define a struct to hold the graph data
 pub struct Graph {
     pub nodes: usize,
     pub edges: usize,
@@ -11,44 +10,25 @@ pub struct Graph {
 }
 
 impl Graph {
-    // Create a new Graph
-    pub fn new(nodes: usize, edges: usize) -> Self {
-        Graph {
-            nodes,
-            edges,
-            edge_list: Vec::with_capacity(edges),
-        }
-    }
-
-    // Add an edge to the Graph
-    pub fn add_edge(&mut self, from_node: usize, to_node: usize) {
-        self.edge_list.push((from_node, to_node));
+    pub fn new(nodes: usize, edges: usize, edge_list: Vec<(usize, usize)>) -> Self {
+        Graph { nodes, edges, edge_list }
     }
 }
 
-// Function to map ParseIntError to io::Error
-fn parse_error_to_io_error(e: ParseIntError) -> io::Error {
-    io::Error::new(io::ErrorKind::InvalidInput, e.to_string())
-}
-
-// Read the collaboration graph from a file
 pub fn read_graph(file_path: &Path) -> io::Result<Graph> {
     let file = File::open(file_path)?;
     let reader = BufReader::new(file);
-
     let mut nodes = 0;
     let mut edges = 0;
     let mut edge_list: Vec<(usize, usize)> = Vec::new();
 
     for line in reader.lines() {
         let line = line?;
-
         if line.starts_with("#") {
             if line.contains("Nodes:") {
                 let parts: Vec<&str> = line.split_whitespace().collect();
                 nodes = parts[2].parse().map_err(parse_error_to_io_error)?;
                 edges = parts[4].parse().map_err(parse_error_to_io_error)?;
-                edge_list.reserve(edges); // Pre-allocate space for edges
             }
             continue;
         }
@@ -61,8 +41,15 @@ pub fn read_graph(file_path: &Path) -> io::Result<Graph> {
         }
     }
 
-    Ok(Graph::new(nodes, edges))
+    Ok(Graph::new(nodes, edges, edge_list))
 }
+
+fn parse_error_to_io_error(e: ParseIntError) -> io::Error {
+    io::Error::new(io::ErrorKind::InvalidInput, e.to_string())
+}
+
+
+
 
 
 
