@@ -1,6 +1,7 @@
 mod graph;
 mod degree_distribution;
 mod one;
+mod centrality;
 
 use std::path::Path;
 use crate::graph::Graph;
@@ -19,7 +20,7 @@ fn main() -> std::io::Result<()> {
         println!("Degree distribution is empty.");
         return Ok(());
     }
-
+    //Find most connected and most isolated
     let (most_connected, most_isolated) = find_top_percent(&distribution, 10);
     
     println!("Top 10% Most Connected Nodes:");
@@ -34,6 +35,3 @@ fn main() -> std::io::Result<()> {
 
     Ok(())
 }
-
-
-
