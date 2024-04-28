@@ -4,16 +4,23 @@ mod one;
 mod centrality;
 
 use std::path::Path;
-use crate::graph::Graph;
-use crate::graph::read_graph;
+use crate::graph::{Graph, read_graph};
 use crate::one::print_first_10_entries;
 use crate::degree_distribution::{calculate_degree_distribution, find_top_percent};
+
 
 fn main() -> std::io::Result<()> {
     let path = Path::new("/Users/dereklee/Desktop/DS 210/final_project/ca-GrQc.txt");
 
     let graph = read_graph(&path)?;
+    // Ensure the graph is read correctly
     print_first_10_entries(&path)?;
+    // Print connected components
+    let components = (&graph).find_connected_components();
+    println!("The graph has {} connected components:", components.len());
+    for (i, component) in components.iter().enumerate() {
+        println!("Component {}: {:?}", i + 1, component);
+    }
 
     let distribution = calculate_degree_distribution(&graph);
     if distribution.is_empty() {
