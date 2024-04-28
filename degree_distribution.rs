@@ -9,30 +9,23 @@ pub fn calculate_degree_distribution(graph: &Graph) -> HashMap<usize, usize> {
         distribution.entry(from_node).and_modify(|e| *e += 1).or_insert(1);
         distribution.entry(to_node).and_modify(|e| *e += 1).or_insert(1);
     });
-
     distribution.into_iter().collect()
 }
-
 pub fn find_top_percent(distribution: &HashMap<usize, usize>, percent: usize) -> (Vec<usize>, Vec<usize>) {
     let num_nodes = distribution.len();
     let threshold = std::cmp::max(1, num_nodes * percent / 100);
-
     println!("Threshold for top percent calculation: {}", threshold);
-
     if num_nodes == 0 {
         println!("No nodes to process.");
         return (Vec::new(), Vec::new()); // Ensures return of correct type if no nodes
     }
-
     let mut nodes_by_degree: Vec<_> = distribution.iter().collect();
     nodes_by_degree.sort_by(|a, b| b.1.cmp(a.1));
-
     // Print sorted nodes and their degrees to verify
     println!("Sorted Nodes by Degree:");
     for (node, degree) in nodes_by_degree.iter().take(10) {
         println!("Node {}, Degree {}", node, degree);
     }
-
     let most_connected = nodes_by_degree.iter()
         .take(threshold)
         .map(|(&node, &_degree)| node)
@@ -42,13 +35,31 @@ pub fn find_top_percent(distribution: &HashMap<usize, usize>, percent: usize) ->
         .take(threshold)
         .map(|(&node, &_degree)| node)
         .collect::<Vec<usize>>();
-
     // Debug output before returning
     println!("Most connected (Top {}%): {:?}", percent, most_connected);
     println!("Least connected (Top {}%): {:?}", percent, least_connected);
-
     // Explicitly return the tuple
     return (most_connected, least_connected);
+}
+pub fn mean_degree(degree_distribution: &HashMap<usize, usize>) -> f64 {
+    let sum: usize = degree_distribution.values().sum();
+    let count: usize = degree_distribution.len();
+    if count == 0 {
+        0.0
+    } else {
+        sum as f64 / count as f64
+    }
+}
+
+pub fn median_degree(degree_distribution: &HashMap<usize, usize>) -> usize {
+    let mut degrees: Vec<usize> = degree_distribution.values().cloned().collect();
+    degrees.sort_unstable();
+    let mid = degrees.len() / 2;
+    if degrees.len() % 2 == 0 {
+        (degrees[mid - 1] + degrees[mid]) / 2
+    } else {
+        degrees[mid]
+    }
 }
 
 #[cfg(test)]
