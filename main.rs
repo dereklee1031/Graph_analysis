@@ -21,17 +21,27 @@ fn main() -> std::io::Result<()> {
         return Ok(());
     }
     //Find most connected and most isolated
-    let (most_connected, most_isolated) = find_top_percent(&distribution, 10);
+    let (most_connected, most_isolated) = find_top_percent(&distribution, 1);
     
-    println!("Top 10% Most Connected Nodes:");
+    println!("Top 1% Most Connected Nodes:");
     for node in most_connected {
         println!("Node {}: Degree {}", node, distribution.get(&node).unwrap_or(&0));
     }
 
-    println!("Top 10% Most Isolated Nodes:");
+    println!("Top 1% Most Isolated Nodes:");
     for node in most_isolated {
         println!("Node {}: Degree {}", node, distribution.get(&node).unwrap_or(&0));
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_run() {
+        assert_eq!(run(), "Application is running");
+    }
 }

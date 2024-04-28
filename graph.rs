@@ -48,7 +48,25 @@ fn parse_error_to_io_error(e: ParseIntError) -> io::Error {
     io::Error::new(io::ErrorKind::InvalidInput, e.to_string())
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
 
+    #[test]
+    fn test_graph_initialization() {
+        let graph = Graph::new(5);
+        assert_eq!(graph.nodes, 5);
+        assert!(graph.edges.is_empty());
+    }
+
+    #[test]
+    fn test_add_edge() {
+        let mut graph = Graph::new(5);
+        graph.add_edge(1, 2);
+        assert_eq!(graph.edges.len(), 1);
+        assert_eq!(graph.edges[0], (1, 2));
+    }
+}
 
 
 

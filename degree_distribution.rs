@@ -51,4 +51,18 @@ pub fn find_top_percent(distribution: &HashMap<usize, usize>, percent: usize) ->
     return (most_connected, least_connected);
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::graph::Graph;
+
+    #[test]
+    fn test_calculate_degree() {
+        let mut graph = Graph::new(3);
+        graph.add_edge(0, 1);
+        graph.add_edge(1, 2);
+        let degrees = calculate_degree(&graph);
+        assert_eq!(degrees, vec![1, 2, 1]);
+    }
+}
 
